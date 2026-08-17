@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Environment variables (contains secrets - never commit)
+.env
+.env.local
+
+# Build output
+client/dist/
+client/build/
+
+# Uploaded user files (Module 3 - trash report images)
+server/uploads/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor folders
+.vscode/
+.idea/
+
+uploads/

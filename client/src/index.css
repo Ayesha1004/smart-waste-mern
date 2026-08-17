@@ -1,6 +1,10 @@
+
 /* ============================================
    DESIGN TOKENS
    ============================================ */
+
+@import "leaflet/dist/leaflet.css";
+
 :root {
   /* Color */
   --ink: #1b2420;
@@ -329,3 +333,54 @@ button:focus-visible, a:focus-visible, select:focus-visible {
 .status-badge--pending { background: rgba(217, 142, 43, 0.12); color: var(--caution-amber); }
 .status-badge--inprogress { background: rgba(61, 108, 153, 0.12); color: var(--route-blue); }
 .status-badge--completed { background: rgba(60, 122, 92, 0.12); color: var(--signal-green-dark); }
+.upload-layout { display: flex; gap: 1.5rem; align-items: flex-start; }
+.upload-form-panel { width: 420px; flex-shrink: 0; }
+.upload-preview { width: 100%; border-radius: 6px; margin: 0.75rem 0; }
+.map-container { flex: 1; height: 500px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); }
+
+.report-pin-marker {
+  background: var(--caution-amber);
+  width: 20px; height: 20px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  border: 2px solid white;
+}
+
+.hint-text { font-size: 0.82rem; color: var(--ink-muted); margin: 0.5rem 0; }
+.hint-success { color: var(--signal-green-dark); }
+
+.alert-warning {
+  background: rgba(217, 142, 43, 0.1);
+  color: var(--caution-amber);
+  border: 1px solid rgba(217, 142, 43, 0.3);
+  padding: 0.65rem 0.85rem;
+  border-radius: var(--radius);
+  margin-bottom: 1.25rem;
+  font-size: 0.85rem;
+}
+
+.link-button {
+  background: none; border: none; color: var(--route-blue);
+  text-decoration: underline; cursor: pointer; padding: 0; width: auto;
+  font-size: 0.85rem; margin-top: 0.5rem;
+}
+
+.report-filter-tabs { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
+.filter-tab { font-size: 0.85rem; color: var(--ink-muted); cursor: pointer; padding-bottom: 0.3rem; }
+.filter-tab.active { color: var(--signal-green); border-bottom: 2px solid var(--signal-green); font-weight: 500; }
+
+.report-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.report-card {
+  display: flex; align-items: center; gap: 1rem;
+  background: var(--paper-raised); border: 1px solid var(--line); border-radius: 6px;
+  padding: 0.75rem; text-decoration: none; color: var(--ink);
+}
+.report-thumb { width: 64px; height: 64px; object-fit: cover; border-radius: 4px; }
+.report-card-body { flex: 1; }
+.report-card-desc { margin: 0; font-size: 0.9rem; }
+.report-card-meta { margin: 0.2rem 0 0 0; font-size: 0.78rem; color: var(--ink-muted); font-family: var(--font-mono); }
+.needs-review-tag { color: var(--clay-red); }
+
+.back-link { font-size: 0.85rem; color: var(--ink-muted); text-decoration: none; }
+.report-detail-image { width: 100%; border-radius: 8px; }
+.report-detail-meta { display: flex; gap: 1.25rem; align-items: center; margin: 1.25rem 0; flex-wrap: wrap; }

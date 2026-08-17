@@ -19,6 +19,8 @@ export default function Navbar() {
       <div className="navbar-links">
         <Link to="/">Home</Link>
         <Link to="/profile">Profile</Link>
+        <Link to="/upload">Upload Report</Link>
+        <Link to="/my-reports">My Reports</Link>
 
         {role === "admin" && (
           <>

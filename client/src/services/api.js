@@ -1,5 +1,8 @@
 import axios from "axios";
 
+//this api intercepts both client requests and server's response//
+//line 6-8 dynamically pull the base url, the server address//
+
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
 });
