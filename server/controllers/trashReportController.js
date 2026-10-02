@@ -3,6 +3,7 @@ import path from "path";
 import crypto from "crypto";
 import { fileURLToPath } from "url";
 import TrashReport from "../models/TrashReport.js";
+import Route from "../models/Route.js";
 import { extractGpsCoordinates } from "../services/exifService.js";
 import { getCityFromCoordinates } from "../services/geocodingService.js";
 import { classifyWaste } from "../services/aiClassifierService.js";
@@ -174,6 +175,30 @@ const VALID_TRANSITIONS = {
   Completed: ["Pending", "InProgress"],
 };
 
+function determineRouteStatusFromReports(reportStatuses) {
+  if (reportStatuses.every((s) => s === "Completed")) return "Completed";
+  if (reportStatuses.some((s) => s === "InProgress")) return "InProgress";
+  if (reportStatuses.every((s) => s === "Pending")) return "Pending";
+  return "InProgress"; // mixed pending/completed -> treat as in progress
+}
+
+async function cascadeStatusToRoute(reportId, newReportStatus) {
+  // Find a route that contains this report among its stops
+  const route = await Route.findOne({ "stops.reportId": reportId }).populate("stops.reportId");
+  if (!route) return; // this report isn't part of any route yet — nothing to cascade
+
+  const statuses = route.stops.map((stop) =>
+    String(stop.reportId._id) === String(reportId) ? newReportStatus : stop.reportId.status
+  );
+
+  const newRouteStatus = determineRouteStatusFromReports(statuses);
+
+  if (route.status !== newRouteStatus) {
+    route.status = newRouteStatus;
+    await route.save();
+  }
+}
+
 /**
  * PUT /api/trashreport/:id/status
  * NOTE: this does not yet cascade to a parent Route's status — that
@@ -193,9 +218,71 @@ export async function updateReportStatus(req, res) {
     report.status = status;
     await report.save();
 
+    // NEW: cascade this change to the parent route's status, if it belongs to one
+    await cascadeStatusToRoute(report._id, status);
+
     return res.status(200).json({ report });
   } catch (err) {
     console.error("Update report status error:", err);
     return res.status(500).json({ message: "Internal server error" });
   }
 }
+export async function adminGetAllReports(req, res) {
+  try {
+    const filter = {};
+    if (req.query.status) filter.status = req.query.status;
+    if (req.query.needsReview === "true") filter.needsReview = true;
+
+    const reports = await TrashReport.find(filter)
+      .sort({ reportedAt: -1 })
+      .populate("userId", "fullName email"); // shows who reported it, not just an ID
+
+    return res.status(200).json({ reports, total: reports.length });
+  } catch (err) {
+    console.error("Admin get all reports error:", err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+/**
+ * PUT /api/admin/reports/:id/correct
+ * The feedback-loop piece: lets an admin overwrite the AI's guess with the
+ * real waste type. Marks wasLabelCorrected so these are easy to query later
+ * as retraining candidates.
+ */
+export async function adminCorrectReportLabel(req, res) {
+  try {
+    const { wasteType } = req.body;
+    const report = await TrashReport.findById(req.params.id);
+    if (!report) return res.status(404).json({ message: "Report not found" });
+
+    report.wasteType = wasteType;
+    report.needsReview = false; // an admin has now confirmed the correct label
+    report.wasLabelCorrected = true;
+
+    await report.save();
+    return res.status(200).json({ report });
+  } catch (err) {
+    console.error("Admin correct report error:", err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+/**
+ * DELETE /api/admin/reports/:id
+ * Unlike the user-facing delete (Module 3), admins can delete a report
+ * regardless of its status.
+ */
+export async function adminDeleteReport(req, res) {
+  try {
+    const report = await TrashReport.findById(req.params.id);
+    if (!report) return res.status(404).json({ message: "Report not found" });
+
+    await report.deleteOne();
+    return res.status(204).send();
+  } catch (err) {
+    console.error("Admin delete report error:", err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+

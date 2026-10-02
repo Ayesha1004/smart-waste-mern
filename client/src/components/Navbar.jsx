@@ -26,8 +26,15 @@ export default function Navbar() {
           <>
             <span className="navbar-divider">|</span>
             <Link to="/admin/users">Manage Users</Link>
+            <Link to="/admin/routes">Manage Routes</Link>
           </>
         )}
+        {role === "admin" && (
+          <>
+            <span className="navbar-divider">|</span>
+            <Link to="/admin/reports">Manage Reports</Link>
+          </>
+)}
       </div>
 
       <div className="navbar-user">

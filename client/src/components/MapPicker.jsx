@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from "react-leaflet";
 import L from "leaflet";
@@ -17,9 +18,6 @@ function ClickToPlace({ onMove, interactive }) {
   return null;
 }
 
-// react-leaflet's `center` prop only applies on initial mount — this component
-// watches `position` and imperatively pans the map whenever it changes
-// programmatically (e.g. from a search result), not just from a click.
 function RecenterOnChange({ position }) {
   const map = useMap();
   useEffect(() => {
@@ -30,13 +28,30 @@ function RecenterOnChange({ position }) {
   return null;
 }
 
-/**
- * position: [lat, lng] or null (null = no pin placed yet)
- * onChange: (position) => void, called when the user clicks OR searches to place/move the pin
- * interactive: if false, the map is read-only and the search bar is hidden (used in ReportDetail)
- */
+// FIX: Leaflet measures its container's size once, at mount time. If the
+// surrounding flex layout hasn't fully settled yet (a common race when a
+// map sits inside dynamically-rendered containers), Leaflet locks onto a
+// too-small size and never notices the real size afterward — this is why
+// the original .NET map.js called setTimeout(() => map.invalidateSize(), 100)
+// after init. This component does the React equivalent.
+function InvalidateSizeOnMount() {
+  const map = useMap();
+  useEffect(() => {
+    // A short delay, same idea as the original map.js — gives the
+    // surrounding CSS layout (flexbox) time to settle before Leaflet
+    // re-measures. Running twice (immediate + delayed) covers both
+    // fast and slow layout settling.
+    console.log("INVALIDATE SIZE RUNNING", map.getSize());
+    map.invalidateSize();
+    const timer = setTimeout(() => map.invalidateSize(), 150);
+    return () => clearTimeout(timer);
+  }, [map]);
+  return null;
+}
+
 export default function MapPicker({ position, onChange, interactive = true }) {
-  const center = position || [30.3753, 69.3451]; // Pakistan-wide default view if no pin yet
+   console.log("MAPPICKER VERSION CHECK: NEW CODE IS RUNNING");
+  const center = position || [30.3755, 69.3451];
   const zoom = position ? 15 : 5;
 
   const [query, setQuery] = useState("");
@@ -51,9 +66,6 @@ export default function MapPicker({ position, onChange, interactive = true }) {
     setSearchError(null);
 
     try {
-      // Nominatim's forward-geocoding endpoint: text -> coordinates.
-      // No custom headers needed here — Nominatim's policy accepts the
-      // Referer header browsers send automatically for client-side apps.
       const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`;
       const res = await fetch(url);
       const results = await res.json();
@@ -97,6 +109,7 @@ export default function MapPicker({ position, onChange, interactive = true }) {
           />
           <ClickToPlace onMove={onChange} interactive={interactive} />
           <RecenterOnChange position={position} />
+          <InvalidateSizeOnMount />
           {position && <Marker position={position} icon={pinIcon} />}
         </MapContainer>
       </div>

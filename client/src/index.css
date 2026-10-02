@@ -4,6 +4,7 @@
    ============================================ */
 
 @import "leaflet/dist/leaflet.css";
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap");
 
 :root {
   /* Color */
@@ -28,8 +29,6 @@
   --radius: 3px;
   --shadow: 0 1px 3px rgba(27, 36, 32, 0.08), 0 1px 2px rgba(27, 36, 32, 0.06);
 }
-
-@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap");
 
 * { box-sizing: border-box; }
 
@@ -337,6 +336,7 @@ button:focus-visible, a:focus-visible, select:focus-visible {
 .upload-form-panel { width: 420px; flex-shrink: 0; }
 .upload-preview { width: 100%; border-radius: 6px; margin: 0.75rem 0; }
 .map-container { flex: 1; height: 500px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); }
+.map-picker .map-container { flex: none; }
 
 .report-pin-marker {
   background: var(--caution-amber);
@@ -384,3 +384,34 @@ button:focus-visible, a:focus-visible, select:focus-visible {
 .back-link { font-size: 0.85rem; color: var(--ink-muted); text-decoration: none; }
 .report-detail-image { width: 100%; border-radius: 8px; }
 .report-detail-meta { display: flex; gap: 1.25rem; align-items: center; margin: 1.25rem 0; flex-wrap: wrap; }
+
+.map-picker { display: flex; flex-direction: column; gap: 0.5rem; flex: 1; min-width: 0;}
+.map-search-bar { display: flex; gap: 0.5rem; }
+.map-search-bar input { flex: 1; padding: 0.55rem 0.75rem; border: 1px solid var(--line); border-radius: 4px; }
+.map-search-bar button { width: auto; padding: 0.55rem 1rem; }
+.map-search-error { font-size: 0.8rem; color: var(--clay-red); margin: 0; }
+
+.route-filter-bar { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.route-filter-bar input, .route-filter-bar select {
+  padding: 0.55rem 0.75rem; border: 1px solid var(--line); border-radius: 4px;
+}
+.btn-primary { width: auto; padding: 0.55rem 1.2rem; }
+
+.route-manage-layout { display: flex; gap: 1.5rem; align-items: flex-start; }
+.route-list-panel { width: 360px; flex-shrink: 0; display: flex; flex-direction: column; gap: 0.75rem; }
+
+.route-list-card {
+  background: var(--paper-raised); border: 1px solid var(--line); border-radius: 6px;
+  padding: 0.9rem; cursor: pointer;
+}
+.route-list-card.selected { border-color: var(--route-blue); box-shadow: 0 0 0 2px rgba(61,108,153,0.15); }
+.route-list-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; }
+.route-list-card-meta { font-size: 0.8rem; color: var(--ink-muted); font-family: var(--font-mono); margin: 0 0 0.6rem 0; }
+
+.route-stop-marker {
+  background: var(--route-blue); color: white; border-radius: 50%;
+  width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 12px; font-weight: 600;
+  border: 2px solid white; box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+.route-map-empty { display: flex; align-items: center; justify-content: center; color: var(--ink-muted); background: var(--paper); }

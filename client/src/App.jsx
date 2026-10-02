@@ -10,6 +10,10 @@ import AdminUsers from "./pages/admin/AdminUsers";
 import UploadTrash from "./pages/UploadTrash";
 import MyReports from "./pages/MyReports";
 import ReportDetail from "./pages/ReportDetail";
+import ManageRoutes from "./pages/admin/ManageRoutes";
+import AdminReports from "./pages/admin/AdminReports";
+
+
 
 export default function App() {
   return (
@@ -65,6 +69,21 @@ export default function App() {
             <ReportDetail />
           </ProtectedRoute>
           } />
+        <Route 
+          path="/admin/routes" 
+          element={
+          <ProtectedRoute roles={["admin"]}>
+            <ManageRoutes />
+          </ProtectedRoute>
+          }/>
+
+        <Route 
+          path="/admin/reports" 
+          element={
+          <ProtectedRoute roles={["admin"]}>
+            <AdminReports />
+          </ProtectedRoute>
+} />
 
         {/* Module 3 will add: /upload, /my-reports, /my-reports/:id */}
         {/* Module 4 will add: /admin/routes, /admin/routes/:id */}

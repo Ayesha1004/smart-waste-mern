@@ -8,6 +8,7 @@ import adminRoutes from "./routes/adminRoutes.js";
 import trashReportRoutes from "./routes/trashReportRoutes.js";
 import path from "path";
 import { fileURLToPath } from "url";
+import routeRoutes from "./routes/routeRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -28,6 +29,7 @@ app.use("/api/user", userRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/trashreport", trashReportRoutes);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/api/route", routeRoutes);
 
 app.get("/api/health", (req, res) => res.json({ status: "ok" }));
 

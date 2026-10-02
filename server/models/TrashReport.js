@@ -14,7 +14,8 @@ const trashReportSchema = new mongoose.Schema(
     latitude: { type: Number, required: true },
     longitude: { type: Number, required: true },
     city: { type: String, default: "" },
-    hasGpsData: { type: Boolean, default: false }, // false = pin was placed manually
+    hasGpsData: { type: Boolean, default: false },
+    wasLabelCorrected: { type: Boolean, default: false }, // false = pin was placed manually
 
     status: {
       type: String,
