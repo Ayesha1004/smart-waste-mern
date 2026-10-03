@@ -84,10 +84,6 @@ export default function App() {
             <AdminReports />
           </ProtectedRoute>
 } />
-
-        {/* Module 3 will add: /upload, /my-reports, /my-reports/:id */}
-        {/* Module 4 will add: /admin/routes, /admin/routes/:id */}
-        {/* Module 5 will add: /admin (dashboard), /admin/reports */}
       </Routes>
     </AuthProvider>
   );

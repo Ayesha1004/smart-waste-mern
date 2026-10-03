@@ -14,9 +14,9 @@ export async function getRoutes(req, res) {
     const { city, status, wasteType, page = 1, pageSize = 20 } = req.query;
 
     const filter = {};
-    if (city) filter.city = city;
+    if (city) filter.city = { $regex: new RegExp(`^${city.trim()}$`, "i") };
     if (status) filter.status = status;
-    if (wasteType) filter.wasteType = wasteType;
+    if (wasteType) filter.wasteType = { $regex: new RegExp(`^${wasteType.trim()}$`, "i") };
 
     const skip = (Number(page) - 1) * Number(pageSize);
 
@@ -63,8 +63,8 @@ export async function createOptimizedRoute(req, res) {
     const { city, wasteType, vehicleCapacity = 0 } = req.body;
 
     const reportFilter = { status: "Pending" };
-    if (city) reportFilter.city = city;
-    if (wasteType) reportFilter.wasteType = wasteType;
+    if (city) reportFilter.city = { $regex: new RegExp(`^${city.trim()}$`, "i") };
+    if (wasteType) reportFilter.wasteType = { $regex: new RegExp(`^${wasteType.trim()}$`, "i") };
 
     const pendingReports = await TrashReport.find(reportFilter);
 
